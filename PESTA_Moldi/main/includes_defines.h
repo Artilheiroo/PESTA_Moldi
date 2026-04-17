@@ -23,6 +23,6 @@
 
 //-------DEFINES---------
 #define USER_LED_GPIO GPIO_NUM_33
-#define PERIODO_LEeENVIA_MS 3000
+#define PERIODO_LEeENVIA_MS 30000
 
 #endif

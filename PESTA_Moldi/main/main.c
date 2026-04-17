@@ -31,17 +31,17 @@ esp_err_t init_cartao_sd()
     esp_err_t ret = esp_vfs_fat_sdmmc_mount("/sdcard", &host, &slot_config, &mount_config, &card);
     
     if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "Falha ao montar o cartão SD: %s", ret);
+        ESP_LOGE(TAG, "Falha ao montar o cartão SD: %s", esp_err_to_name(ret));
         return ret;
     }
-    ESP_LOGI(Tag, "Cartão SD montado com sucesso!");
+    ESP_LOGI(TAG, "Cartão SD montado com sucesso!");
     
     //criar cabeçalho do ficheiro
     FILE *f = fopen("/sdcard/teste.csv", "r");
     if (f == NULL) { //ficheiro não existe
         f = fopen("/sdcard/teste.csv", "w"); //criar ficheiro
         if (f != NULL) {
-            fprintf(f, "LED, ESTADO\n"); //titulos
+            fprintf(f, "LED, ESTADO\r\n\r\n"); //titulos
             fclose(f);
         }
     }else{
