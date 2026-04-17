@@ -15,7 +15,7 @@ static const char *TAG = "SISTEMA_MONITORIZACAO"; // Tag para os logs (ajuda a i
 
 esp_err_t init_cartao_sd()
 {
-    ESP_LOGI(TAG, "CARTAO_SD", "A iniciar o barramento SDMMC...");
+    ESP_LOGI(TAG, "A iniciar o barramento SDMMC...");
 
     esp_vfs_fat_sdmmc_mount_config_t mount_config = {
         .format_if_mount_failed = true, //se o cartão não for formatado, formata o cartão
@@ -31,17 +31,17 @@ esp_err_t init_cartao_sd()
     esp_err_t ret = esp_vfs_fat_sdmmc_mount("/sdcard", &host, &slot_config, &mount_config, &card);
     
     if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "CARTAO_SD", "Falha ao montar o cartão SD: %s", ret);
+        ESP_LOGE(TAG, "Falha ao montar o cartão SD: %s", ret);
         return ret;
     }
-    ESP_LOGI(TAG, "CARTAO_SD", "Cartão SD montado com sucesso");
+    ESP_LOGI(Tag, "Cartão SD montado com sucesso!");
     
     //criar cabeçalho do ficheiro
     FILE *f = fopen("/sdcard/teste.csv", "r");
     if (f == NULL) { //ficheiro não existe
         f = fopen("/sdcard/teste.csv", "w"); //criar ficheiro
         if (f != NULL) {
-            fprintf(f, "LED, ESTADO"); //titulos
+            fprintf(f, "LED, ESTADO\n"); //titulos
             fclose(f);
         }
     }else{

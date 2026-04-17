@@ -1,7 +1,7 @@
 {
     "version":            "1.3",
     "project_name":       "machine_monitor_blink_test",
-    "project_version":    "ddde3dd-dirty",
+    "project_version":    "79109e0-dirty",
     "project_path":       "C:/Code/PESTA_Moldi",
     "idf_path":           "C:/Code/PESTA_Moldi/.espressif/v6.0/esp-idf",
     "build_dir":          "C:/Code/PESTA_Moldi/build",
