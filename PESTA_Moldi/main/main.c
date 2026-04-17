@@ -2,17 +2,6 @@
 
 static const char *TAG = "SISTEMA_MONITORIZACAO"; // Tag para os logs (ajuda a identificar quem enviou a mensagem para o PC)
 
-/*void init(void)
-{
-    gpio_reset_pin(USER_LED_GPIO); //reinicia o pino do led
-    gpio_set_direction(USER_LED_GPIO, GPIO_MODE_OUTPUT); //pino do led como saída
-
-    TickType_t xLastWakeTime= xTaskGetTickCount(); //define o tempo de inicio
-    const TickType_t xFrequencia = pdMS_TO_TICKS(PERIODO_LEeENVIA_MS); //traduz tempo para ticks
-
-    int estado_led = 0;
-}*/
-
 esp_err_t init_cartao_sd()
 {
     ESP_LOGI(TAG, "A iniciar o barramento SDMMC...");
