@@ -1,0 +1,2 @@
+source C:/Code/PESTA_Moldi/build/bootloader/gdbinit/symbols
+source C:/Code/PESTA_Moldi/build/bootloader/gdbinit/connect
