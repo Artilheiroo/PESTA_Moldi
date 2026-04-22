@@ -193,4 +193,8 @@ C:/Code/PESTA_Moldi/build/esp-idf/esp_driver_sdspi/libesp_driver_sdspi.a
 C:/Code/PESTA_Moldi/build/esp-idf/perfmon/libperfmon.a
 C:/Code/PESTA_Moldi/build/esp-idf/rt/librt.a
 C:/Code/PESTA_Moldi/build/esp-idf/spiffs/libspiffs.a
+C:/Code/PESTA_Moldi/build/esp-idf/espressif__lan87xx/libespressif__lan87xx.a
+C:/Code/PESTA_Moldi/build/esp-idf/esp_eth/libesp_eth.a
 C:/Code/PESTA_Moldi/build/esp-idf/main/libmain.a
+C:/Code/PESTA_Moldi/build/esp-idf/fatfs/libfatfs.a
+C:/Code/PESTA_Moldi/build/esp-idf/espressif__lan87xx/libespressif__lan87xx.a

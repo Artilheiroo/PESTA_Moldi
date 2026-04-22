@@ -155,6 +155,7 @@
 		"C:/Code/PESTA_Moldi/build/esp-idf/rt/cmake_install.cmake",
 		"C:/Code/PESTA_Moldi/build/esp-idf/spiffs/cmake_install.cmake",
 		"C:/Code/PESTA_Moldi/build/esp-idf/ulp/cmake_install.cmake",
+		"C:/Code/PESTA_Moldi/build/esp-idf/espressif__lan87xx/cmake_install.cmake",
 		"C:/Code/PESTA_Moldi/build/esp-idf/main/cmake_install.cmake"
 	],
 	"Parallel" : false

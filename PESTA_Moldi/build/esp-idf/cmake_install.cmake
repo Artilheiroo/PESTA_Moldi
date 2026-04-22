@@ -709,6 +709,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("C:/Code/PESTA_Moldi/build/esp-idf/espressif__lan87xx/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("C:/Code/PESTA_Moldi/build/esp-idf/main/cmake_install.cmake")
 endif()
 

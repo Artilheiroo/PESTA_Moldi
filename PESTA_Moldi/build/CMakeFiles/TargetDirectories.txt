@@ -1074,6 +1074,13 @@ C:/Code/PESTA_Moldi/build/esp-idf/ulp/CMakeFiles/list_install_components.dir
 C:/Code/PESTA_Moldi/build/esp-idf/ulp/CMakeFiles/install.dir
 C:/Code/PESTA_Moldi/build/esp-idf/ulp/CMakeFiles/install/local.dir
 C:/Code/PESTA_Moldi/build/esp-idf/ulp/CMakeFiles/install/strip.dir
+C:/Code/PESTA_Moldi/build/esp-idf/espressif__lan87xx/CMakeFiles/__idf_espressif__lan87xx.dir
+C:/Code/PESTA_Moldi/build/esp-idf/espressif__lan87xx/CMakeFiles/edit_cache.dir
+C:/Code/PESTA_Moldi/build/esp-idf/espressif__lan87xx/CMakeFiles/rebuild_cache.dir
+C:/Code/PESTA_Moldi/build/esp-idf/espressif__lan87xx/CMakeFiles/list_install_components.dir
+C:/Code/PESTA_Moldi/build/esp-idf/espressif__lan87xx/CMakeFiles/install.dir
+C:/Code/PESTA_Moldi/build/esp-idf/espressif__lan87xx/CMakeFiles/install/local.dir
+C:/Code/PESTA_Moldi/build/esp-idf/espressif__lan87xx/CMakeFiles/install/strip.dir
 C:/Code/PESTA_Moldi/build/esp-idf/main/CMakeFiles/__idf_main.dir
 C:/Code/PESTA_Moldi/build/esp-idf/main/CMakeFiles/edit_cache.dir
 C:/Code/PESTA_Moldi/build/esp-idf/main/CMakeFiles/rebuild_cache.dir

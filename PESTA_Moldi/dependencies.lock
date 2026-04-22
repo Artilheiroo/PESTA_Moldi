@@ -1,0 +1,23 @@
+dependencies:
+  espressif/lan87xx:
+    component_hash: e532dd62590996a64fe76c7906821c6b0816be2c8e31196284f4442027703243
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=6.0'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    targets:
+    - esp32
+    - esp32p4
+    version: 1.0.0
+  idf:
+    source:
+      type: idf
+    version: 6.0.0
+direct_dependencies:
+- espressif/lan87xx
+manifest_hash: d9b6574f0f45ed956ca7e4d4031f5a10915c88b660125ef9b78f965c797dd9f1
+target: esp32
+version: 3.0.0
