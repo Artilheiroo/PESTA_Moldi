@@ -1,4 +1,4 @@
-#include "rede.h"
+#include "includes_defines.h"
 
 static const char *TAG = "REDE";
 volatile bool rede_disponivel = false; // bloqueia ou liberta a tarefa TCP

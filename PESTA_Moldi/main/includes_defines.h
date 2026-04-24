@@ -51,11 +51,37 @@
 //-------FUNÇÕES FORA DA MAIN---------
 //--- RELÓGIO ---
 esp_err_t init_i2c(void);
-void ler_relogio(char *buffer_tempo);
+void ler_relogio(char *buffer_data, char *buffer_hora);
 void acertar_rel(int ano, int mes, int dia, int hora, int min, int seg);
 
 //--- BOTAO START ---
 void esperar_start(void);
 
+//Cartão SD
+esp_err_t init_cartao_sd();
+long ler_ponteiro();
+void guardar_ponteiro(long posicao);
+
+
+#endif
+
+//-------------------DEFINES DE REDE-------------
+#ifndef REDE_H
+#define REDE_H
+
+#define ETH_PHY_ADDR         0          // endereço padrão na Olimex
+#define ETH_PHY_RST_GPIO    -1          // não usa pino de reset dedicado por GPIO
+#define ETH_MDC_GPIO        GPIO_NUM_23         // pino MDC
+#define ETH_MDIO_GPIO       GPIO_NUM_18         // pino MDIO
+#define PHY_PWR_GPIO        GPIO_NUM_5  // da enregia ao chip da ethernet
+
+#define WIFI_SSID "NOME_DA_TUA_REDE_WIFI"
+#define WIFI_PASS "PASSWORD_DO_WIFI"
+
+#define IP_SERVIDOR "192.168.1.100" // IP do PC/Servidor que vai receber os dados
+#define PORTA_SERVIDOR 8080
+
+extern volatile bool rede_disponivel;
+void init_ethernet(void);
 
 #endif

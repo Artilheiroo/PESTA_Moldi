@@ -1,7 +1,7 @@
 {
     "version":            "1.3",
     "project_name":       "machine_monitor_blink_test",
-    "project_version":    "65a55fb-dirty",
+    "project_version":    "606b6ea-dirty",
     "project_path":       "C:/Code/PESTA_Moldi",
     "idf_path":           "C:/Code/PESTA_Moldi/.espressif/v6.0/esp-idf",
     "build_dir":          "C:/Code/PESTA_Moldi/build",
@@ -1750,7 +1750,7 @@
             "managed_reqs": [],
             "managed_priv_reqs": [ "espressif__lan87xx" ],
             "file": "C:/Code/PESTA_Moldi/build/esp-idf/main/libmain.a",
-            "sources": [ "C:/Code/PESTA_Moldi/main/main.c", "C:/Code/PESTA_Moldi/main/relogio.c", "C:/Code/PESTA_Moldi/main/botao_start.c", "C:/Code/PESTA_Moldi/main/rede.c" ],
+            "sources": [ "C:/Code/PESTA_Moldi/main/main.c", "C:/Code/PESTA_Moldi/main/relogio.c", "C:/Code/PESTA_Moldi/main/botao_start.c", "C:/Code/PESTA_Moldi/main/rede.c", "C:/Code/PESTA_Moldi/main/cartaoSD.c" ],
             "include_dirs": [ "." ]
         },
         "mbedtls": {
