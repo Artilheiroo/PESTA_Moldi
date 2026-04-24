@@ -14,7 +14,7 @@
 
 // -------Bibliotecas ESP-IDF DRIVERS---------
 #include "driver/gpio.h"
-//#include "driver/i2c.h"
+#include "driver/i2c_master.h"
 #include "driver/sdmmc_host.h"
 #include "esp_vfs_fat.h"
 #include "sdmmc_cmd.h"
@@ -39,6 +39,23 @@
 //-------DEFINES---------
 #define USER_BUTTON_GPIO GPIO_NUM_34
 #define USER_LED_GPIO GPIO_NUM_33
-#define PERIODO_LEITURA_MS 5000
+
+#define PERIODO_LEITURA_MS 5000 // 5segundos (tirar 3 zeros para seg)
+
+#define RTC_SCL_IO GPIO_NUM_16
+#define RTC_SDA_IO GPIO_NUM_32
+#define I2C_MASTER_NUM 0
+#define I2C_FREQ_HZ 100000 //100kHz
+#define DS3231_ADDR 0x68 //binário no datasheet para o endereço
+
+//-------FUNÇÕES FORA DA MAIN---------
+//--- RELÓGIO ---
+esp_err_t init_i2c(void);
+void ler_relogio(char *buffer_tempo);
+void acertar_rel(int ano, int mes, int dia, int hora, int min, int seg);
+
+//--- BOTAO START ---
+void esperar_start(void);
+
 
 #endif
