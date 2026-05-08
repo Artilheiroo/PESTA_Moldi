@@ -102,8 +102,6 @@ void task_sincro_tcp(void *pvParameters)
 
 void app_main(void) 
 {
-    gpio_reset_pin(USER_LED_GPIO); //reinicia o pino do led
-    gpio_set_direction(USER_LED_GPIO, GPIO_MODE_OUTPUT); //pino do led como saída
 
     if(init_cartao_sd()!= ESP_OK)
     {
@@ -127,7 +125,6 @@ void app_main(void)
     TickType_t xLastWakeTime= xTaskGetTickCount(); //define o tempo de inicio
     const TickType_t xFrequencia = pdMS_TO_TICKS(PERIODO_LEITURA_MS); //traduz tempo para ticks
 
-    int estado_led = 0; //ESTADO LED PARA TESTE
     int contador_mandar_BD = 0;
 
     while (1) //loop infinito
@@ -140,9 +137,6 @@ void app_main(void)
         char data_atual[16];
 
         ler_relogio(data_atual, hora_atual);
-
-        estado_led = !estado_led; //inverte o estado do led
-        gpio_set_level(USER_LED_GPIO, estado_led); //liga ou desliga o led
 
         FILE *f = fopen("/sdcard/teste.csv", "a"); // "a" (append) adiciona novas informações ao fim do ficheiro
         if(f != NULL){

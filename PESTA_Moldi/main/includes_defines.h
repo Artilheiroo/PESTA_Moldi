@@ -40,10 +40,11 @@
 #define USER_BUTTON_GPIO GPIO_NUM_34
 #define USER_LED_GPIO GPIO_NUM_33
 
+
 #define PERIODO_LEITURA_MS 5000 // 5segundos (tirar 3 zeros para seg)
 
-#define RTC_SCL_IO GPIO_NUM_16
-#define RTC_SDA_IO GPIO_NUM_32
+#define RTC_SCL_IO GPIO_NUM_16 //11 na placa
+#define RTC_SDA_IO GPIO_NUM_32 //13 na placa
 #define I2C_MASTER_NUM 0
 #define I2C_FREQ_HZ 100000 //100kHz
 #define DS3231_ADDR 0x68 //binário no datasheet para o endereço

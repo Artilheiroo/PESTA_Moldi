@@ -4,6 +4,9 @@ static const char *TAG = "START";
 
 void esperar_start(void)
 {
+    gpio_reset_pin(USER_LED_GPIO); //reinicia o pino do led
+    gpio_set_direction(USER_LED_GPIO, GPIO_MODE_OUTPUT); //pino do led como saída
+
     gpio_reset_pin(USER_BUTTON_GPIO);
     gpio_set_direction(USER_BUTTON_GPIO, GPIO_MODE_INPUT);
 
@@ -27,5 +30,6 @@ void esperar_start(void)
         vTaskDelay(pdMS_TO_TICKS(20));
     }
 
-    ESP_LOGI(TAG, "Botão pressionado! A iniciar sistema de monitorização...");
+    ESP_LOGI(TAG, "Sistema de monitorização ligado!");
+    gpio_set_level(USER_LED_GPIO, 1); //liga o led
 }
