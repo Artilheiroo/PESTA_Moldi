@@ -21,6 +21,7 @@
 #include "driver/sdmmc_host.h"
 #include "esp_log.h"
 #include "esp_err.h"
+#include "esp_attr.h"
 
 // -------Bibliotecas REDE E WI-FI---------
 #include "esp_wifi.h"
@@ -56,12 +57,18 @@ void ler_relogio(char *buffer_data, char *buffer_hora);
 void acertar_rel(int ano, int mes, int dia, int hora, int min, int seg);
 
 //--- BOTAO START ---
-void esperar_start(void);
+void esperar_start();
 
-//Cartão SD
+//--- CARTÃO SD ---
 esp_err_t init_cartao_sd();
 long ler_ponteiro();
 void guardar_ponteiro(long posicao);
+
+//--- COMUNICAÇÃO TCP --- 
+extern TaskHandle_t handle_tarefa_tcp; //o nosso sinal de comunicação entre as tasks
+
+void task_sincro_tcp(void *pvParameters);
+esp_err_t enviar_linha(const char* linha);
 
 
 #endif

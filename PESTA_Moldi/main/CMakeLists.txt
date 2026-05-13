@@ -1,5 +1,5 @@
 idf_component_register(
-    SRCS "main.c" "relogio.c" "botao_start.c" "rede.c" "cartaoSD.c"
+    SRCS "main.c" "relogio.c" "botao.c" "rede.c" "cartaoSD.c" "dados_tcp.c"
     INCLUDE_DIRS "."
     REQUIRES
         fatfs
