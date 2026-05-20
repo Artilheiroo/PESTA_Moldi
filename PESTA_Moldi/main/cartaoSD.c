@@ -35,7 +35,7 @@ esp_err_t init_cartao_sd()
     if (f == NULL) { //ficheiro não existe
         f = fopen("/sdcard/teste.csv", "w"); //criar ficheiro
         if (f != NULL) {
-            fprintf(f, "   DATA     |   HORA   \r\n"); //titulos
+            fprintf(f, "   DATA     |    HORA    |\r\n"); //titulos
          // fprintf(f, " --/--/----   --:--:-- \r\n"); PARA VIZUALIZAR A TABELA
             fclose(f);
         }

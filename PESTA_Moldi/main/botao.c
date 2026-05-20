@@ -11,7 +11,7 @@ void esperar_start()
     gpio_set_direction(USER_LED_GPIO, GPIO_MODE_OUTPUT);
     
 
-   vTaskDelay(pdMS_TO_TICKS(2400));
+   vTaskDelay(pdMS_TO_TICKS(2500));
 
     ESP_LOGI(TAG, "PRESSIONAR O BOTAO PARA INICIAR");
 

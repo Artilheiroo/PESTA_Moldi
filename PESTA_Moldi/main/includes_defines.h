@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <math.h>
 
 //-------Bibliotecas FREERTOS---------
 #include "freertos/FreeRTOS.h"
@@ -23,6 +24,10 @@
 #include "esp_err.h"
 #include "esp_attr.h"
 
+#include "esp_adc/adc_oneshot.h"
+#include "esp_adc/adc_cali.h"
+#include "esp_adc/adc_cali_scheme.h"
+
 // -------Bibliotecas REDE E WI-FI---------
 #include "esp_wifi.h"
 #include "esp_event.h"
@@ -30,6 +35,7 @@
 #include "esp_netif.h"
 #include "esp_eth.h"
 #include "esp_eth_phy_lan87xx.h"
+#include "esp_rom_sys.h"
 
 //-------Bibliotecas TCP/IP PURO---------
 #include "lwip/err.h"
@@ -38,14 +44,13 @@
 #include <lwip/netdb.h>
 
 //-------DEFINES---------
-#define USER_BUTTON_GPIO GPIO_NUM_34
-#define USER_LED_GPIO GPIO_NUM_33
+#define USER_BUTTON_GPIO    GPIO_NUM_34
+#define USER_LED_GPIO       GPIO_NUM_33
 
+#define PERIODO_LEITURA_MS  5000 // 2,5seg (tirar 3 zeros para seg)
 
-#define PERIODO_LEITURA_MS 5000 // 5segundos (tirar 3 zeros para seg)
-
-#define RTC_SCL_IO GPIO_NUM_16 //11 na placa
-#define RTC_SDA_IO GPIO_NUM_32 //13 na placa
+#define RTC_SCL_IO  GPIO_NUM_16 //11 na placa
+#define RTC_SDA_IO  GPIO_NUM_32 //13 na placa
 #define I2C_MASTER_NUM 0
 #define I2C_FREQ_HZ 100000 //100kHz
 #define DS3231_ADDR 0x68 //binário no datasheet para o endereço
@@ -70,7 +75,6 @@ extern TaskHandle_t handle_tarefa_tcp; //o nosso sinal de comunicação entre as
 void task_sincro_tcp(void *pvParameters);
 esp_err_t enviar_linha(const char* linha);
 
-
 #endif
 
 //-------------------DEFINES DE REDE-------------
@@ -83,13 +87,15 @@ esp_err_t enviar_linha(const char* linha);
 #define ETH_MDIO_GPIO       GPIO_NUM_18         // pino MDIO
 #define PHY_PWR_GPIO        GPIO_NUM_5  // da enregia ao chip da ethernet
 
-#define WIFI_SSID "NOME_DA_TUA_REDE_WIFI"
-#define WIFI_PASS "PASSWORD_DO_WIFI"
+#define IP_SERVIDOR "192.168.10.167" // IP do PC/Servidor que vai receber os dados
+#define PORTA_SERVIDOR 3306
+#define DB_NAME "machine_monitor"
+#define DB_USER "flexoflow"
+#define DB_PASS "FlexoTeste@1234."
 
-#define IP_SERVIDOR "192.168.1.100" // IP do PC/Servidor que vai receber os dados
-#define PORTA_SERVIDOR 8080
-
+//extern volatile bool ethernet_on;
 extern volatile bool rede_disponivel;
-void init_ethernet(void);
+//void init_ethernet(void);
+void init_wifi(void);
 
 #endif
