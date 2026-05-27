@@ -33,7 +33,7 @@ esp_err_t enviar_linha(const char* linha)
     }
 
     char buffer_resposta[16];// sting provisoria para receber resposta
-    int tamanho = recv(sock, buffer_resposta, sizeof(buffer_resposta) - 1, 0); //fica a espera de resposta e mete o numero de carateres em tamanho
+    int tamanho = recv(sock, buffer_resposta, sizeof(buffer_resposta) - 1, 0); //fica a espera de resposta
     esp_err_t resultado = ESP_FAIL;
 
     if(tamanho > 0)
@@ -61,7 +61,6 @@ void task_sincro_tcp(void *pvParameters)
 
     while (1)
     {
-
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY); //espera que a app_main diga que pode enviar
 
         //confimar se tem conetividade antes de abrir o ficheiro
@@ -78,7 +77,32 @@ void task_sincro_tcp(void *pvParameters)
 
         while (fgets(linha_a_enviar, sizeof(linha_a_enviar), f_dados) != NULL) //lê e envia todas as linhas pendentes
         {
-            if(enviar_linha(linha_a_enviar) == ESP_OK)
+            // Se a posição atual for 0, pulamos a linha de cabeçalho: "   DATA     |    HORA    |"
+            if (ult_pos == 0) {
+                ult_pos = ftell(f_dados);
+                guardar_ponteiro(ult_pos);
+                continue;
+            }
+
+            // Realizar o parsing da data e hora da linha CSV
+            char data_parsed[16] = {0};
+            char hora_parsed[16] = {0};
+            
+            // Formato no CSV: "DD/MM/YYYY    HH:MM:SS" (separado por espaços)
+            if (sscanf(linha_a_enviar, "%15s %15s", data_parsed, hora_parsed) != 2) {
+                // Avançar ponteiro em caso de linha inválida para não bloquear infinitamente
+                ult_pos = ftell(f_dados);
+                guardar_ponteiro(ult_pos);
+                continue;
+            }
+
+            // Construir payload JSON contendo credenciais e dados
+            char payload[512];
+            snprintf(payload, sizeof(payload),
+                     "{\"user\":\"%s\",\"pass\":\"%s\",\"db\":\"%s\",\"table\":\"Data\",\"data\":\"%s\",\"hora\":\"%s\"}",
+                     DB_USER, DB_PASS, DB_NAME, data_parsed, hora_parsed);
+
+            if(enviar_linha(payload) == ESP_OK)
             {
                 ult_pos = ftell(f_dados);
                 guardar_ponteiro(ult_pos);

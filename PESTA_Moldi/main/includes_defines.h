@@ -60,6 +60,7 @@
 esp_err_t init_i2c(void);
 void ler_relogio(char *buffer_data, char *buffer_hora);
 void acertar_rel(int ano, int mes, int dia, int hora, int min, int seg);
+bool sincronizar_ntp(void);
 
 //--- BOTAO START ---
 void esperar_start();
@@ -88,14 +89,14 @@ esp_err_t enviar_linha(const char* linha);
 #define PHY_PWR_GPIO        GPIO_NUM_5  // da enregia ao chip da ethernet
 
 #define IP_SERVIDOR "192.168.10.167" // IP do PC/Servidor que vai receber os dados
-#define PORTA_SERVIDOR 3306
+#define PORTA_SERVIDOR 5000
 #define DB_NAME "machine_monitor"
 #define DB_USER "flexoflow"
 #define DB_PASS "FlexoTeste@1234."
 
 //extern volatile bool ethernet_on;
 extern volatile bool rede_disponivel;
-//void init_ethernet(void);
-void init_wifi(void);
+void init_ethernet(void);
+//void init_wifi(void);
 
 #endif

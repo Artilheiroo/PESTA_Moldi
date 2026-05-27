@@ -1,4 +1,7 @@
 #include "includes_defines.h"
+#include "esp_netif_sntp.h"
+#include <time.h>
+#include <sys/time.h>
 
 /*===============================
         RELÓGIO (DS3231)
@@ -110,4 +113,60 @@ void acertar_rel(int ano, int mes, int dia, int hora, int min, int seg)
     } else {
         ESP_LOGE("DS3231", "Falha ao atualizar relogio: %s", esp_err_to_name(ret));
     }
+}
+
+/*===============================
+        NTP → DS3231
+===============================*/
+
+bool sincronizar_ntp(void)
+{
+    // 1. Verificar se a rede está disponível (sem esperar, pois será chamada ciclicamente)
+    if (!rede_disponivel) {
+        ESP_LOGW("NTP", "Rede não disponível, a usar hora do DS3231.");
+        return false;
+    }
+
+    // 2. Configurar e iniciar o SNTP
+    esp_sntp_config_t config = ESP_NETIF_SNTP_DEFAULT_CONFIG("pool.ntp.org");
+    esp_netif_sntp_init(&config);
+
+    ESP_LOGI("NTP", "A sincronizar com pool.ntp.org...");
+
+    // 3. Esperar pela sincronização (máx 15 segundos)
+    esp_err_t ret = esp_netif_sntp_sync_wait(pdMS_TO_TICKS(15000));
+
+    if (ret != ESP_OK) {
+        ESP_LOGW("NTP", "Timeout na sincronização NTP. A usar hora atual do DS3231.");
+        esp_netif_sntp_deinit();
+        return false;
+    }
+
+    // 4. Definir o fuso horário de Portugal continental (WET/WEST com horário de verão)
+    setenv("TZ", "WET-0WEST,M3.5.0/1,M10.5.0", 1);
+    tzset();
+
+    // 5. Obter a hora local do sistema (já sincronizada pelo NTP)
+    time_t agora;
+    struct tm info_tempo;
+    time(&agora);
+    localtime_r(&agora, &info_tempo);
+
+    // 6. Acertar o DS3231 com a hora NTP
+    acertar_rel(
+        info_tempo.tm_year + 1900,  // ano completo
+        info_tempo.tm_mon + 1,      // mês (tm_mon é 0-11)
+        info_tempo.tm_mday,         // dia
+        info_tempo.tm_hour,         // hora
+        info_tempo.tm_min,          // minuto
+        info_tempo.tm_sec           // segundo
+    );
+
+    ESP_LOGI("NTP", "DS3231 acertado por NTP: %02d/%02d/%04d %02d:%02d:%02d",
+             info_tempo.tm_mday, info_tempo.tm_mon + 1, info_tempo.tm_year + 1900,
+             info_tempo.tm_hour, info_tempo.tm_min, info_tempo.tm_sec);
+
+    // 7. Libertar recursos do SNTP (já não é necessário)
+    esp_netif_sntp_deinit();
+    return true;
 }

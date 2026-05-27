@@ -15,8 +15,8 @@ void app_main(void)
         ESP_LOGE(TAG, "Sem armazenamento local!");
     }
 
-    //init_ethernet();
-    init_wifi();
+    init_ethernet();
+    //init_wifi();
 
     if (init_i2c() == ESP_OK) {
         ESP_LOGI(TAG2, "I2C arrancou com sucesso!");
@@ -28,18 +28,24 @@ void app_main(void)
 
     esperar_start();
 
-    //acertar_rel(2026, 4, 24, 12, 44, 1); APENAS PARA ACERTAR O RELOGIO
+    sincronizar_ntp(); //acerta o DS3231 automaticamente via NTP
 
     TickType_t xLastWakeTime= xTaskGetTickCount(); //define o tempo de inicio
     const TickType_t xFrequencia = pdMS_TO_TICKS(PERIODO_LEITURA_MS); //traduz tempo para ticks
 
     int contador_mandar_BD = 0;
+    bool ntp_acertado = false; //flag para saber se o relógio já foi acertado por NTP
 
     while (1) //loop infinito
     {
 
 
             vTaskDelayUntil(&xLastWakeTime, xFrequencia); //começa a contagem de tempo (garante a periocidade exata de 1 minuto)
+
+            // Se o NTP ainda não acertou o relógio, tenta novamente a cada ciclo
+            if (!ntp_acertado) {
+                ntp_acertado = sincronizar_ntp();
+            }
 
             contador_mandar_BD ++;
 

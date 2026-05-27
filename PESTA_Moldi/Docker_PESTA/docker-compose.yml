@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  db-bridge:
+    build: .
+    container_name: esp32-db-bridge
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - BRIDGE_PORT=5000
+      - MYSQL_HOST=host.docker.internal # Acede ao MySQL no host via mapeamento Docker
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # Permite ao container aceder ao localhost do host

@@ -3,9 +3,9 @@
 static const char *TAG = "REDE";
 
 volatile bool rede_disponivel = false; // bloqueia ou liberta a tarefa TCP
-//volatile bool ethernet_on = false;
+volatile bool ethernet_on = false;
 
-/*static void eth_event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data)
+static void eth_event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data)
 {
     if(event_base == ETH_EVENT && event_id == ETHERNET_EVENT_CONNECTED)
     {
@@ -68,9 +68,9 @@ void init_ethernet(void)
 
     // arrancar o driver Ethernet (inicia a "negociação" com o Router)
     ESP_ERROR_CHECK(esp_eth_start(eth_handle));
-}*/
+}
 
-static void event_handler_wifi(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data) 
+/*static void event_handler_wifi(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data) 
 {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         ESP_LOGI(TAG, "A tentar conectar ao Wi-Fi...");
@@ -125,4 +125,4 @@ void init_wifi(void)
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
     ESP_ERROR_CHECK(esp_wifi_start());
-}
+}*/
