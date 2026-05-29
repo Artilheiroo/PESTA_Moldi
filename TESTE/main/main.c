@@ -17,8 +17,7 @@ static const char *TAG = "ADC";
 #define ADC_BITWIDTH        ADC_BITWIDTH_DEFAULT
 
 #define PERIODO_LEITURA_MS 1000 //tempo de envio de mensagem
-#define TEMPO_AMOSTRAS_US 100000 //us (5 ciclos a 5Hz)
-#define CENTRO_VIRTUAL 1.65f //mV (offset)
+#define TEMPO_AMOSTRAS_US 100000 //us (5 ciclos a 50Hz)
 
 
 // STC013-030 A
@@ -66,31 +65,25 @@ void app_main()
         uint64_t tempo_inicio = esp_timer_get_time();
 
         float soma_quadrados = 0;
+        float soma_tensao = 0;
         int num_amostras= 0;
         int adc_cru = 0;
         int tensao_real = 0;
 
-        float media_quadrados = 0;
         float tensao_rms= 0;
         float corrente_rms = 0;
         float tensao_real_V =0;
-        float sinal_real= 0;
 
         while((esp_timer_get_time()- tempo_inicio) < TEMPO_AMOSTRAS_US) //se ainda n passou 100ms faz as leituras
         {
             adc_oneshot_read(adc_handle, ADC_CHANNEL, &adc_cru); //le o valor bruto
 
-            //ESP_LOGW(TAG, "adc_cru= %d", adc_cru); 
             adc_cali_raw_to_voltage(cali_handle, adc_cru, &tensao_real);
 
             tensao_real_V = tensao_real / 1000.0f; // converter para V
-            //ESP_LOGW(TAG, "tensao_real= %.2f", tensao_real_V);
 
-            sinal_real = tensao_real_V - CENTRO_VIRTUAL; //remover o offset para recuperar a onda centrda em 0
-            //ESP_LOGW(TAG, "sinal_real= %.2f", sinal_real);
-
-            soma_quadrados += (sinal_real * sinal_real);
-            //ESP_LOGW(TAG, "soma_quadrados= %.2f", soma_quadrados);
+            soma_tensao += tensao_real_V;                       // acumular para calcular media (offset DC real)
+            soma_quadrados += (tensao_real_V * tensao_real_V);  // acumular quadrados
             
             num_amostras++;
 
@@ -98,19 +91,23 @@ void app_main()
 
         if(num_amostras > 0)
         {
-            media_quadrados = (float)soma_quadrados / num_amostras;
+            float media = soma_tensao / num_amostras;               // offset DC real do circuito
+            float media_quadrados = soma_quadrados / num_amostras;   // media dos quadrados
 
-            tensao_rms = sqrtf(media_quadrados);//raiz qudrada para obter o rms (em mV)
+            // RMS AC = desvio padrao = sqrt(mean(x^2) - mean(x)^2)
+            float variancia = media_quadrados - (media * media);
+            if(variancia < 0.0f) variancia = 0.0f;  // protecao contra erro numerico
+
+            tensao_rms = sqrtf(variancia);
             
-            corrente_rms= tensao_rms * FATOR_CONVERSAO_TC; //obter a corrente
+            corrente_rms = tensao_rms * FATOR_CONVERSAO_TC; //obter a corrente
 
-            if(corrente_rms<0.15f) corrente_rms=0.0f;
+            if(corrente_rms < 0.15f) corrente_rms = 0.0f;
+
+            ESP_LOGI(TAG, "Amostras: %d | Vrms: %.4f V | Corrente: %.2f A", num_amostras, tensao_rms, corrente_rms);
         }
 
-        ESP_LOGI(TAG, "Amostras: %d | Vrms: %.2f V | Corrente: %.2f A", 
-            num_amostras, tensao_rms , corrente_rms);
-
-        vTaskDelayUntil(&xLastWakeTime, xFrequencia); //começa a contagem de tempo (garante a periocidade exata de 5ms)
+        vTaskDelayUntil(&xLastWakeTime, xFrequencia); //começa a contagem de tempo (garante a periodicidade exata de 1000ms)
     }
 }
  

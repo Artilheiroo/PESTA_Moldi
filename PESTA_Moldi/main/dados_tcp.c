@@ -84,12 +84,13 @@ void task_sincro_tcp(void *pvParameters)
                 continue;
             }
 
-            // Realizar o parsing da data e hora da linha CSV
+            // Realizar o parsing da data, hora e corrente da linha CSV
             char data_parsed[16] = {0};
             char hora_parsed[16] = {0};
+            char corrente_parsed[16] = {0};
             
-            // Formato no CSV: "DD/MM/YYYY    HH:MM:SS" (separado por espaços)
-            if (sscanf(linha_a_enviar, "%15s %15s", data_parsed, hora_parsed) != 2) {
+            // Formato no CSV: "DD/MM/YYYY    HH:MM:SS    X.XX" (separado por espaços)
+            if (sscanf(linha_a_enviar, "%15s %15s %15s", data_parsed, hora_parsed, corrente_parsed) != 3) {
                 // Avançar ponteiro em caso de linha inválida para não bloquear infinitamente
                 ult_pos = ftell(f_dados);
                 guardar_ponteiro(ult_pos);
@@ -99,8 +100,8 @@ void task_sincro_tcp(void *pvParameters)
             // Construir payload JSON contendo credenciais e dados
             char payload[512];
             snprintf(payload, sizeof(payload),
-                     "{\"user\":\"%s\",\"pass\":\"%s\",\"db\":\"%s\",\"table\":\"Data\",\"data\":\"%s\",\"hora\":\"%s\"}",
-                     DB_USER, DB_PASS, DB_NAME, data_parsed, hora_parsed);
+                     "{\"user\":\"%s\",\"pass\":\"%s\",\"db\":\"%s\",\"table\":\"Data\",\"data\":\"%s\",\"hora\":\"%s\",\"corrente\":\"%s\"}",
+                     DB_USER, DB_PASS, DB_NAME, data_parsed, hora_parsed, corrente_parsed);
 
             if(enviar_linha(payload) == ESP_OK)
             {

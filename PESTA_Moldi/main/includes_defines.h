@@ -23,6 +23,7 @@
 #include "esp_log.h"
 #include "esp_err.h"
 #include "esp_attr.h"
+#include "esp_timer.h"
 
 #include "esp_adc/adc_oneshot.h"
 #include "esp_adc/adc_cali.h"
@@ -76,6 +77,10 @@ extern TaskHandle_t handle_tarefa_tcp; //o nosso sinal de comunicação entre as
 void task_sincro_tcp(void *pvParameters);
 esp_err_t enviar_linha(const char* linha);
 
+//--- LEITOR DE SENSORES (ADC) ---
+void init_ADC(void);
+float ler_corrente_rms(void);
+
 #endif
 
 //-------------------DEFINES DE REDE-------------
@@ -96,7 +101,7 @@ esp_err_t enviar_linha(const char* linha);
 
 //extern volatile bool ethernet_on;
 extern volatile bool rede_disponivel;
-void init_ethernet(void);
-//void init_wifi(void);
+//void init_ethernet(void);
+void init_wifi(void);
 
 #endif

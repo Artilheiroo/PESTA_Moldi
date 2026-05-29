@@ -15,14 +15,16 @@ void app_main(void)
         ESP_LOGE(TAG, "Sem armazenamento local!");
     }
 
-    init_ethernet();
-    //init_wifi();
+    //init_ethernet();
+    init_wifi();
 
     if (init_i2c() == ESP_OK) {
         ESP_LOGI(TAG2, "I2C arrancou com sucesso!");
     } else {
         ESP_LOGE(TAG2, "Falha ao arrancar o I2C!");
     }
+
+    init_ADC(); // inicializar o leitor de sensores (ADC)
 
     xTaskCreatePinnedToCore(task_sincro_tcp, "TaskTCP", 4096, NULL, 5, &handle_tarefa_tcp, 1); //cria a task TCP no Core 1 
 
@@ -38,8 +40,6 @@ void app_main(void)
 
     while (1) //loop infinito
     {
-
-
             vTaskDelayUntil(&xLastWakeTime, xFrequencia); //começa a contagem de tempo (garante a periocidade exata de 1 minuto)
 
             // Se o NTP ainda não acertou o relógio, tenta novamente a cada ciclo
@@ -54,9 +54,11 @@ void app_main(void)
 
             ler_relogio(data_atual, hora_atual);
 
+            float corrente_atual = ler_corrente_rms(); // ler corrente do sensor
+
             FILE *f = fopen("/sdcard/teste.csv", "a"); // "a" (append) adiciona novas informações ao fim do ficheiro
             if(f != NULL){
-                fprintf(f, "%s    %s    \n", data_atual, hora_atual);
+                fprintf(f, "%s    %s    %.2f\n", data_atual, hora_atual, corrente_atual);
                 fclose(f);
 
                 ESP_LOGI(TAG,"Dados guardados no ficheiro teste.csv!");
@@ -74,7 +76,5 @@ void app_main(void)
             }else {
                 ESP_LOGE(TAG,"Erro abrir o ficheiro para escrita!");
             }
-
-
     }
 }

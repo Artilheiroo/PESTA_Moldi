@@ -48,13 +48,13 @@ def iniciar_ponte():
             cursor = db.cursor()
             
             # Insere os dados usando backticks para evitar conflitos de sintaxe com 'Data'
-            query = "INSERT INTO `Data` (`date`, `hora`) VALUES (%s, %s)"
-            values = (payload['data'], payload['hora'])
+            query = "INSERT INTO `Data` (`date`, `hora`, `valor_sensor`) VALUES (%s, %s, %s)"
+            values = (payload['data'], payload['hora'], payload['corrente'])
             
             cursor.execute(query, values)
             db.commit()
             
-            print(f"[+] Inserido no MySQL: Data={payload['data']} Hora={payload['hora']}")
+            print(f"[+] Inserido no MySQL: Data={payload['data']} Hora={payload['hora']} Corrente={payload['corrente']}A")
             client_sock.sendall(b"OK")
             
             cursor.close()

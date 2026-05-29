@@ -1,5 +1,5 @@
 idf_component_register(
-    SRCS "main.c" "relogio.c" "botao.c" "rede.c" "cartaoSD.c" "dados_tcp.c" "leituras.c"
+    SRCS "main.c" "relogio.c" "botao.c" "rede.c" "cartaoSD.c" "dados_tcp.c" "leitor_sensores.c"
     INCLUDE_DIRS "."
     REQUIRES
         fatfs
@@ -12,4 +12,5 @@ idf_component_register(
         nvs_flash
         lwip
         esp_adc
+        esp_timer
 )
