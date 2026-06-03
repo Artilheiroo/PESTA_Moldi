@@ -49,6 +49,7 @@
 #define USER_LED_GPIO       GPIO_NUM_33
 
 #define PERIODO_LEITURA_MS  5000 // 2,5seg (tirar 3 zeros para seg)
+#define CICLOS_24H  (24 * 60 * 60 * 1000 / PERIODO_LEITURA_MS)
 
 #define RTC_SCL_IO  GPIO_NUM_16 //11 na placa
 #define RTC_SDA_IO  GPIO_NUM_32 //13 na placa
@@ -75,7 +76,7 @@ extern volatile bool sistema_ativo;
 esp_err_t init_cartao_sd();
 long ler_ponteiro();
 void guardar_ponteiro(long posicao);
-bool limpar_cartao_sd(void);
+bool limpar_sd(void);
 
 //--- COMUNICAÇÃO TCP --- 
 extern TaskHandle_t handle_tarefa_tcp; //o nosso sinal de comunicação entre as tasks
@@ -93,7 +94,7 @@ bool ler_estado_maquina(void);
 
 //--- SENSOR AM2320B (HUMIDADE/TEMPERATURA) ---
 void init_am2320(void);
-esp_err_t ler_am2320(float *temperatura, float *humidade);
+esp_err_t ler_temp_hum(float *temperatura, float *humidade);
 
 #endif
 

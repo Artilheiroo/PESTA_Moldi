@@ -171,7 +171,7 @@ void init_am2320(void)
     ESP_LOGI(TAG_AM, "Sensor AM2320B inicializado no barramento I2C (addr=0x%02X)", AM2320_ADDR);
 }
 
-esp_err_t ler_am2320(float *temperatura, float *humidade)
+esp_err_t ler_temp_hum(float *temperatura, float *humidade)
 {
     if (am2320_dev == NULL) {
         ESP_LOGE(TAG_AM, "Sensor não inicializado! Chamar init_am2320() primeiro.");

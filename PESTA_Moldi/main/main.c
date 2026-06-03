@@ -4,7 +4,7 @@ static const char *TAG = "SISTEMA_MONITORIZACAO"; // Tag para os logs ( identifi
 static const char *TAG2 = "I2C";
 
 // 24h em ciclos: (24 * 60 * 60 * 1000) / PERIODO_LEITURA_MS
-#define CICLOS_24H  (24 * 60 * 60 * 1000 / PERIODO_LEITURA_MS)
+
 
 /*===============================
              MAIN
@@ -30,12 +30,11 @@ void app_main(void)
     init_ADC(); // inicializar o leitor de sensores (ADC)
     init_contacto_aux(); // inicializar o contacto auxiliar da máquina
     init_am2320(); // inicializar o sensor de humidade/temperatura (partilha I2C com DS3231)
-
-    xTaskCreatePinnedToCore(task_sincro_tcp, "TaskTCP", 4096, NULL, 5, &handle_tarefa_tcp, 1); //cria a task TCP no Core 1 
-
+    
     init_botao(); // inicializar o botão toggle (START/STOP) — cria task de background
-
     sincronizar_ntp(); //acerta o DS3231 automaticamente via NTP
+    
+    xTaskCreatePinnedToCore(task_sincro_tcp, "TaskTCP", 4096, NULL, 5, &handle_tarefa_tcp, 1); //cria a task TCP no Core 1 
 
     TickType_t xLastWakeTime= xTaskGetTickCount(); //define o tempo de inicio
     const TickType_t xFrequencia = pdMS_TO_TICKS(PERIODO_LEITURA_MS); //traduz tempo para ticks
@@ -72,9 +71,9 @@ void app_main(void)
             // Ler sensor de humidade e temperatura
             float temperatura = 0.0f;
             float humidade = 0.0f;
-            bool am2320_ok = (ler_am2320(&temperatura, &humidade) == ESP_OK);
+            bool am2320_ok = (ler_temp_hum(&temperatura, &humidade) == ESP_OK);
 
-            FILE *f = fopen("/sdcard/teste.csv", "a"); // "a" (append) adiciona novas informações ao fim do ficheiro
+            FILE *f = fopen("/sdcard/dados.csv", "a"); // "a" (append) adiciona novas informações ao fim do ficheiro
             if(f != NULL){
                 if (am2320_ok) {
                     fprintf(f, "%s    %s    %.2f    %d    %.1f    %.1f\n", data_atual, hora_atual, corrente_atual, estado_maquina, temperatura, humidade);
@@ -83,7 +82,7 @@ void app_main(void)
                 }
                 fclose(f);
 
-                ESP_LOGI(TAG,"Dados guardados no ficheiro teste.csv!");
+                ESP_LOGI(TAG,"Dados guardados no ficheiro dados.csv!");
 
                 if(contador_mandar_BD == 12)
                 {
@@ -101,7 +100,7 @@ void app_main(void)
             // Limpeza do cartão SD a cada 24h (só se todos os dados já foram enviados)
             if (ciclos_24h >= CICLOS_24H)
             {
-                if (limpar_cartao_sd()) {
+                if (limpar_sd()) {
                     ciclos_24h = 0; // resetar contador após limpeza bem sucedida
                 } else {
                     // Limpeza adiada — tentar novamente no próximo ciclo

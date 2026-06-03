@@ -66,7 +66,7 @@ void task_sincro_tcp(void *pvParameters)
         //confimar se tem conetividade antes de abrir o ficheiro
         if(!rede_disponivel) continue; //se não está ligado a net, volta a adormecer
 
-        FILE *f_dados = fopen("/sdcard/teste.csv", "r");
+        FILE *f_dados = fopen("/sdcard/dados.csv", "r");
         if (f_dados == NULL)
         {
             continue; //senão consegue abrir ficheiro volta a adormecer

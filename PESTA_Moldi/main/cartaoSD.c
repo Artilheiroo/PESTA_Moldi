@@ -31,11 +31,11 @@ esp_err_t init_cartao_sd()
     ESP_LOGI(TAG, "Cartão SD montado com sucesso!");
     
     //criar cabeçalho do ficheiro
-    FILE *f = fopen("/sdcard/teste.csv", "r");
+    FILE *f = fopen("/sdcard/dados.csv", "r");
     if (f == NULL) { //ficheiro não existe
-        f = fopen("/sdcard/teste.csv", "w"); //criar ficheiro
+        f = fopen("/sdcard/dados.csv", "w"); //criar ficheiro
         if (f != NULL) {
-            fprintf(f, "   DATA     |    HORA    |\r\n"); //titulos
+            fprintf(f, "   DATA     |    HORA    | CORRENTE | ESTADO | TEMPERATURA | HUMIDADE \r\n"); //titulos
          // fprintf(f, " --/--/----   --:--:-- \r\n"); PARA VIZUALIZAR A TABELA
             fclose(f);
         }
@@ -77,12 +77,12 @@ void guardar_ponteiro (long posicao)
      LIMPEZA DO CARTÃO SD (24h)
 ===============================*/
 
-bool limpar_cartao_sd(void)
+bool limpar_sd(void)
 {
     // 1. Verificar o tamanho atual do ficheiro CSV
-    FILE *f = fopen("/sdcard/teste.csv", "r");
+    FILE *f = fopen("/sdcard/dados.csv", "r");
     if (f == NULL) {
-        ESP_LOGW(TAG, "Ficheiro teste.csv não existe, nada a limpar.");
+        ESP_LOGW(TAG, "Ficheiro dados.csv não existe, nada a limpar.");
         return true; // não há nada a limpar
     }
 
@@ -100,13 +100,13 @@ bool limpar_cartao_sd(void)
     }
 
     // 3. Todos os dados foram enviados — apagar e recriar o ficheiro
-    remove("/sdcard/teste.csv");
+    remove("/sdcard/dados.csv");
     remove("/sdcard/ponteiro.txt");
 
     // 4. Recriar ficheiro com cabeçalho
-    f = fopen("/sdcard/teste.csv", "w");
+    f = fopen("/sdcard/dados.csv", "w");
     if (f != NULL) {
-        fprintf(f, "   DATA     |    HORA    |\r\n");
+        fprintf(f, "   DATA     |    HORA    | CORRENTE | ESTADO | TEMPERATURA | HUMIDADE \r\n");
         fclose(f);
     }
 
