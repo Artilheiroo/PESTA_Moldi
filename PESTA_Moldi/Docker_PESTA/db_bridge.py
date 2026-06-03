@@ -47,14 +47,20 @@ def iniciar_ponte():
             
             cursor = db.cursor()
             
+            # Converter "--" para None (NULL no MySQL) — o ESP32 envia "--" quando o sensor falha
+            temp_val = payload.get('temperatura')
+            hum_val = payload.get('humidade')
+            if temp_val == '--': temp_val = None
+            if hum_val == '--': hum_val = None
+
             # Insere os dados usando backticks para evitar conflitos de sintaxe com 'Data'
-            query = "INSERT INTO `Data` (`date`, `hora`, `valor_sensor`) VALUES (%s, %s, %s)"
-            values = (payload['data'], payload['hora'], payload['corrente'])
+            query = "INSERT INTO `Data` (`date`, `hora`, `valor_sensor`, `estado`, `temperatura`, `humidade`) VALUES (%s, %s, %s, %s, %s, %s)"
+            values = (payload['data'], payload['hora'], payload['corrente'], payload.get('estado'), temp_val, hum_val)
             
             cursor.execute(query, values)
             db.commit()
             
-            print(f"[+] Inserido no MySQL: Data={payload['data']} Hora={payload['hora']} Corrente={payload['corrente']}A")
+            print(f"[+] Inserido no MySQL: Data={payload['data']} Hora={payload['hora']} Corrente={payload['corrente']}A Estado={payload.get('estado')} Temp={payload.get('temperatura')} Hum={payload.get('humidade')}")
             client_sock.sendall(b"OK")
             
             cursor.close()

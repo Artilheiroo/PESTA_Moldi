@@ -84,24 +84,34 @@ void task_sincro_tcp(void *pvParameters)
                 continue;
             }
 
-            // Realizar o parsing da data, hora e corrente da linha CSV
+            // Realizar o parsing da data, hora, corrente, estado, temp e humidade da linha CSV
             char data_parsed[16] = {0};
             char hora_parsed[16] = {0};
             char corrente_parsed[16] = {0};
+            char estado_parsed[8] = {0};
+            char temp_parsed[8] = {0};
+            char hum_parsed[8] = {0};
             
-            // Formato no CSV: "DD/MM/YYYY    HH:MM:SS    X.XX" (separado por espaços)
-            if (sscanf(linha_a_enviar, "%15s %15s %15s", data_parsed, hora_parsed, corrente_parsed) != 3) {
+            // Formato no CSV: "DD/MM/YYYY    HH:MM:SS    X.XX    0/1    XX.X    XX.X" (separado por espaços)
+            int campos = sscanf(linha_a_enviar, "%15s %15s %15s %7s %7s %7s", data_parsed, hora_parsed, corrente_parsed, estado_parsed, temp_parsed, hum_parsed);
+            if (campos < 4) {
                 // Avançar ponteiro em caso de linha inválida para não bloquear infinitamente
                 ult_pos = ftell(f_dados);
                 guardar_ponteiro(ult_pos);
                 continue;
             }
 
+            // Se não leu temp/hum (linha antiga ou falha do sensor), preencher com "--"
+            if (campos < 6) {
+                strncpy(temp_parsed, "--", sizeof(temp_parsed));
+                strncpy(hum_parsed, "--", sizeof(hum_parsed));
+            }
+
             // Construir payload JSON contendo credenciais e dados
             char payload[512];
             snprintf(payload, sizeof(payload),
-                     "{\"user\":\"%s\",\"pass\":\"%s\",\"db\":\"%s\",\"table\":\"Data\",\"data\":\"%s\",\"hora\":\"%s\",\"corrente\":\"%s\"}",
-                     DB_USER, DB_PASS, DB_NAME, data_parsed, hora_parsed, corrente_parsed);
+                     "{\"user\":\"%s\",\"pass\":\"%s\",\"db\":\"%s\",\"table\":\"Data\",\"data\":\"%s\",\"hora\":\"%s\",\"corrente\":\"%s\",\"estado\":\"%s\",\"temperatura\":\"%s\",\"humidade\":\"%s\"}",
+                     DB_USER, DB_PASS, DB_NAME, data_parsed, hora_parsed, corrente_parsed, estado_parsed, temp_parsed, hum_parsed);
 
             if(enviar_linha(payload) == ESP_OK)
             {

@@ -72,3 +72,47 @@ void guardar_ponteiro (long posicao)
         fclose(f_pont);
     }
 }
+
+/*===============================
+     LIMPEZA DO CARTÃO SD (24h)
+===============================*/
+
+bool limpar_cartao_sd(void)
+{
+    // 1. Verificar o tamanho atual do ficheiro CSV
+    FILE *f = fopen("/sdcard/teste.csv", "r");
+    if (f == NULL) {
+        ESP_LOGW(TAG, "Ficheiro teste.csv não existe, nada a limpar.");
+        return true; // não há nada a limpar
+    }
+
+    fseek(f, 0, SEEK_END);
+    long tamanho_ficheiro = ftell(f);
+    fclose(f);
+
+    // 2. Comparar com o ponteiro de envio (posição até onde os dados já foram enviados)
+    long ponteiro_envio = ler_ponteiro();
+
+    if (ponteiro_envio < tamanho_ficheiro) {
+        // Ainda há dados por enviar — NÃO limpar para não perder dados
+        ESP_LOGW(TAG, "Limpeza adiada: faltam %ld bytes por enviar ao servidor.", tamanho_ficheiro - ponteiro_envio);
+        return false;
+    }
+
+    // 3. Todos os dados foram enviados — apagar e recriar o ficheiro
+    remove("/sdcard/teste.csv");
+    remove("/sdcard/ponteiro.txt");
+
+    // 4. Recriar ficheiro com cabeçalho
+    f = fopen("/sdcard/teste.csv", "w");
+    if (f != NULL) {
+        fprintf(f, "   DATA     |    HORA    |\r\n");
+        fclose(f);
+    }
+
+    // 5. Resetar ponteiro de envio para 0
+    guardar_ponteiro(0);
+
+    ESP_LOGI(TAG, "Cartão SD limpo com sucesso! Ficheiro CSV resetado.");
+    return true;
+}

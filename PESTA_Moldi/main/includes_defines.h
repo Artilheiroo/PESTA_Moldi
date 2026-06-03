@@ -55,21 +55,27 @@
 #define I2C_MASTER_NUM 0
 #define I2C_FREQ_HZ 100000 //100kHz
 #define DS3231_ADDR 0x68 //binário no datasheet para o endereço
+#define AM2320_ADDR 0x5C //endereço I2C do sensor de humidade/temperatura
 
 //-------FUNÇÕES FORA DA MAIN---------
-//--- RELÓGIO ---
+//--- RELÓGIO e I2C ---
 esp_err_t init_i2c(void);
+i2c_master_bus_handle_t obter_i2c_bus(void);
+void i2c_lock(void);
+void i2c_unlock(void);
 void ler_relogio(char *buffer_data, char *buffer_hora);
 void acertar_rel(int ano, int mes, int dia, int hora, int min, int seg);
 bool sincronizar_ntp(void);
 
-//--- BOTAO START ---
-void esperar_start();
+//--- BOTÃO TOGGLE (START/STOP) ---
+void init_botao(void);
+extern volatile bool sistema_ativo;
 
 //--- CARTÃO SD ---
 esp_err_t init_cartao_sd();
 long ler_ponteiro();
 void guardar_ponteiro(long posicao);
+bool limpar_cartao_sd(void);
 
 //--- COMUNICAÇÃO TCP --- 
 extern TaskHandle_t handle_tarefa_tcp; //o nosso sinal de comunicação entre as tasks
@@ -80,6 +86,14 @@ esp_err_t enviar_linha(const char* linha);
 //--- LEITOR DE SENSORES (ADC) ---
 void init_ADC(void);
 float ler_corrente_rms(void);
+
+//--- CONTACTO AUXILIAR ---
+void init_contacto_aux(void);
+bool ler_estado_maquina(void);
+
+//--- SENSOR AM2320B (HUMIDADE/TEMPERATURA) ---
+void init_am2320(void);
+esp_err_t ler_am2320(float *temperatura, float *humidade);
 
 #endif
 

@@ -3,6 +3,8 @@
 #include <time.h>
 #include <sys/time.h>
 
+static SemaphoreHandle_t i2c_mutex = NULL;
+
 /*===============================
         RELÓGIO (DS3231)
 ===============================*/
@@ -17,11 +19,32 @@ uint8_t DEC2BCD(uint8_t valor)
     return ((valor/10*16)+ (valor % 10));
 }
 
-static i2c_master_bus_handle_t rtc_i2c_bus = NULL;
+static i2c_master_bus_handle_t i2c_bus = NULL;
 static i2c_master_dev_handle_t rtc_dev = NULL;
+
+i2c_master_bus_handle_t obter_i2c_bus(void)
+{
+    return i2c_bus;
+}
+
+void i2c_lock(void)
+{
+    if (i2c_mutex) xSemaphoreTake(i2c_mutex, portMAX_DELAY);
+}
+
+void i2c_unlock(void)
+{
+    if (i2c_mutex) xSemaphoreGive(i2c_mutex);
+}
 
 esp_err_t init_i2c(void)
 {
+    // Criar mutex para proteger acessos concorrentes ao barramento I2C
+    i2c_mutex = xSemaphoreCreateMutex();
+    if (i2c_mutex == NULL) {
+        return ESP_ERR_NO_MEM;
+    }
+
     i2c_master_bus_config_t conf = {
         .i2c_port = I2C_MASTER_NUM,
         .sda_io_num = RTC_SDA_IO, //pino aonde vão andar as informações
@@ -31,7 +54,7 @@ esp_err_t init_i2c(void)
         .flags.enable_internal_pullup = true, //segurança do esp32
     };
 
-    esp_err_t ret = i2c_new_master_bus(&conf, &rtc_i2c_bus);
+    esp_err_t ret = i2c_new_master_bus(&conf, &i2c_bus);
     if (ret != ESP_OK) {
         return ret;
     }
@@ -42,7 +65,7 @@ esp_err_t init_i2c(void)
         .scl_speed_hz = I2C_FREQ_HZ,
     };
 
-    return i2c_master_bus_add_device(rtc_i2c_bus, &dev_cfg, &rtc_dev);
+    return i2c_master_bus_add_device(i2c_bus, &dev_cfg, &rtc_dev);
 }
  
 void ler_relogio(char *buffer_data, char *buffer_hora)
@@ -58,8 +81,10 @@ void ler_relogio(char *buffer_data, char *buffer_hora)
     uint8_t reg_inicio = 0x00; // o primeiro registro do tempo (segundos)
     uint8_t dados[7] = {0}; // segundos, minutos, horas, dia, mes, ano
 
+    i2c_lock();
     esp_err_t ret = i2c_master_transmit_receive(rtc_dev, &reg_inicio, 1, dados, sizeof(dados), 1000); //envia o reg_inicio e le 7 bytes para "dados" 
-    
+    i2c_unlock();
+
     if (ret != ESP_OK) //verifica se a comunicação falhou a meio ou tem ruído
     {
         if(buffer_hora) snprintf(buffer_hora, 16, "--:--:--"); //se nao -> preenche buffer com "-" e sai
@@ -106,7 +131,9 @@ void acertar_rel(int ano, int mes, int dia, int hora, int min, int seg)
     tx_data[0] = 0x00; // endereço do primeiro registo (segundos)
     memcpy(&tx_data[1], dados, sizeof(dados));
 
+    i2c_lock();
     esp_err_t ret = i2c_master_transmit(rtc_dev, tx_data, sizeof(tx_data), 1000);
+    i2c_unlock();
     if (ret == ESP_OK) 
     {
         ESP_LOGI("DS3231", "Relógio atualizado com sucesso!");
