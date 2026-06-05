@@ -9,7 +9,7 @@ static const char *TAG = "BOTAO";
 volatile bool sistema_ativo = false; // flag global — main verifica a cada ciclo
 
 // Task de background que monitoriza o botão continuamente
-static void task_botao(void *pvParameters)
+static void botao_on_off(void *pvParameters)
 {
     // Esperar que o botão esteja solto antes de aceitar o primeiro press
     while (gpio_get_level(USER_BUTTON_GPIO) == 0) {
@@ -23,7 +23,7 @@ static void task_botao(void *pvParameters)
         // Esperar que o botão seja pressionado (nível 0 = pressionado)
         if (gpio_get_level(USER_BUTTON_GPIO) == 0)
         {
-            vTaskDelay(pdMS_TO_TICKS(100)); // debounce — 100ms basta para filtrar ruído
+            vTaskDelay(pdMS_TO_TICKS(100)); // debounce
 
             // Confirmar que continua pressionado (não foi ruído)
             if (gpio_get_level(USER_BUTTON_GPIO) == 0)
@@ -66,5 +66,5 @@ void init_botao(void)
     vTaskDelay(pdMS_TO_TICKS(2500)); // tempo para estabilizar no arranque
 
     // Criar task de background para monitorizar o botão (core 0, prioridade alta)
-    xTaskCreatePinnedToCore(task_botao, "TaskBotao", 2048, NULL, 10, NULL, 0);
+    xTaskCreatePinnedToCore(botao_on_off, "TaskBotao", 2048, NULL, 10, NULL, 0);
 }

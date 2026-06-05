@@ -3,9 +3,6 @@
 static const char *TAG = "SISTEMA_MONITORIZACAO"; // Tag para os logs ( identificar quem enviou a mensagem para o PC)
 static const char *TAG2 = "I2C";
 
-// 24h em ciclos: (24 * 60 * 60 * 1000) / PERIODO_LEITURA_MS
-
-
 /*===============================
              MAIN
 ===============================*/
