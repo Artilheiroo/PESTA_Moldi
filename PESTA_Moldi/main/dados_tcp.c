@@ -8,7 +8,7 @@ TaskHandle_t handle_tarefa_tcp = NULL;
           Enviar Dados
 ===============================*/
 
-esp_err_t enviar_linha(const char* linha)
+esp_err_t conexao_servidor(const char* linha)
 {
     struct sockaddr_in dest_addr;
     dest_addr.sin_addr.s_addr = inet_addr(IP_SERVIDOR); //converte o IP para binário
@@ -113,7 +113,7 @@ void task_sincro_tcp(void *pvParameters)
                      "{\"user\":\"%s\",\"pass\":\"%s\",\"db\":\"%s\",\"table\":\"Data\",\"data\":\"%s\",\"hora\":\"%s\",\"corrente\":\"%s\",\"estado\":\"%s\",\"temperatura\":\"%s\",\"humidade\":\"%s\"}",
                      DB_USER, DB_PASS, DB_NAME, data_parsed, hora_parsed, corrente_parsed, estado_parsed, temp_parsed, hum_parsed);
 
-            if(enviar_linha(payload) == ESP_OK)
+            if(conexao_servidor(payload) == ESP_OK)
             {
                 ult_pos = ftell(f_dados);
                 guardar_ponteiro(ult_pos);

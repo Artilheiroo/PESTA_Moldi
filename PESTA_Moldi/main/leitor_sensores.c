@@ -100,7 +100,7 @@ float ler_corrente_rms(void)
    CONTACTO AUXILIAR (ON/OFF)
 ===============================*/
 
-#define CONTACTO_AUX_GPIO   GPIO_NUM_36  // GPIO36 (input-only, livre na Olimex)
+#define CONTACTO_AUX_GPIO   GPIO_NUM_36  // GPIO36 (4 a contar do fim)
 
 void init_contacto_aux(void)
 {

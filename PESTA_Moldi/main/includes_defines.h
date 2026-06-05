@@ -82,7 +82,7 @@ bool limpar_sd(void);
 extern TaskHandle_t handle_tarefa_tcp; //o nosso sinal de comunicação entre as tasks
 
 void task_sincro_tcp(void *pvParameters);
-esp_err_t enviar_linha(const char* linha);
+esp_err_t conexao_servidor(const char* linha);
 
 //--- LEITOR DE SENSORES (ADC) ---
 void init_ADC(void);
