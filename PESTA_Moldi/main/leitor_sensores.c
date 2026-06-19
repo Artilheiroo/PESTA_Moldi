@@ -7,7 +7,7 @@
 static const char *TAG_ADC = "ADC";
 
 #define ADC_UNIT            ADC_UNIT_1
-#define ADC_CHANNEL         ADC_CHANNEL_7   /* GPIO35 (Placa Olimex) */
+#define ADC_CHANNEL         ADC_CHANNEL_7   /* GPIO35 (Placa Olimex) 5  a contar do fim */
 #define ADC_ATTEN           ADC_ATTEN_DB_12 
 #define ADC_BITWIDTH        ADC_BITWIDTH_DEFAULT
 
@@ -90,7 +90,7 @@ float ler_corrente_rms(void)
 
         if (corrente_rms < 0.15f) corrente_rms = 0.0f;
 
-        //ESP_LOGI(TAG_ADC, "Amostras: %d | Vrms: %.4f V | Corrente: %.2f A", num_amostras, tensao_rms, corrente_rms);
+        ESP_LOGI(TAG_ADC, "Amostras: %d | Vrms: %.4f V | Corrente: %.2f A", num_amostras, tensao_rms, corrente_rms);
     }
 
     return corrente_rms;
